@@ -16,8 +16,19 @@ class CorporateData(metaclass=SingletonMeta):
         """Método estático para obtener la instancia única de CorporateData."""
         return CorporateData()
 
-    def getData(self, uuid, id):
-        logging.debug(f"getData: Buscando datos para ID de sede {id} con session ID {uuid}")
+    def getData(self, uuid, uuidCPU, id):
+        """
+        Retorna información de la sede.
+        
+        Parámetros:
+        - uuid: Identificador de sesión.
+        - uuidCPU: Identificador de CPU.
+        - id: Identificador de la sede.
+        
+        Retorna:
+        - JSON con los datos de la sede o un mensaje de error.
+        """
+        logging.debug(f"getData: Buscando datos para ID de sede {id} con session ID {uuid} y CPU ID {uuidCPU}")
         try:
             response = self.table.get_item(Key={'id': id})
             if 'Item' in response:
@@ -34,7 +45,18 @@ class CorporateData(metaclass=SingletonMeta):
             logging.error(f"Error en getData: {e}")
             return {"error": f"Error al acceder a la base de datos: {e}"}
 
-    def getCUIT(self, uuid, id):
+    def getCUIT(self, uuid, uuidCPU, id):
+        """
+        Retorna el CUIT de la sede.
+        
+        Parámetros:
+        - uuid: Identificador de sesión.
+        - uuidCPU: Identificador de CPU.
+        - id: Identificador de la sede.
+        
+        Retorna:
+        - JSON con el CUIT o un mensaje de error.
+        """
         try:
             response = self.table.get_item(Key={'id': id})
             if 'Item' in response:
@@ -44,7 +66,18 @@ class CorporateData(metaclass=SingletonMeta):
         except (BotoCoreError, ClientError) as error:
             return {"error": f"Error al acceder a la base de datos: {error}"}
 
-    def getSeqID(self, uuid, id):
+    def getSeqID(self, uuid, uuidCPU, id):
+        """
+        Retorna un identificador de secuencia único y lo incrementa en la base de datos.
+        
+        Parámetros:
+        - uuid: Identificador de sesión.
+        - uuidCPU: Identificador de CPU.
+        - id: Identificador de la sede.
+        
+        Retorna:
+        - JSON con el identificador de secuencia o un mensaje de error.
+        """
         try:
             response = self.table.get_item(Key={'id': id})
             if 'Item' in response:
